@@ -1,0 +1,132 @@
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 21
+Server version: 8.0.32 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database vidyass4;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> use vidyass4;
+Database changed
+mysql> create table Employee(E_Name varchar(100) primary key,City varchar(100) not null);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc Employee;
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| E_Name | varchar(100) | NO   | PRI | NULL    |       |
+| City   | varchar(100) | NO   |     | NULL    |       |
++--------+--------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> create table Employee_Salary(E_name varchar(200) not null,Dept varchar(100) not null,Salary int(100) not null);
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> desc Employee_Salary;
++--------+--------------+------+-----+---------+-------+
+| Field  | Type         | Null | Key | Default | Extra |
++--------+--------------+------+-----+---------+-------+
+| E_name | varchar(200) | NO   |     | NULL    |       |
+| Dept   | varchar(100) | NO   |     | NULL    |       |
+| Salary | int          | NO   |     | NULL    |       |
++--------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> insert into Employee values('mr.chatterjee','mumbai');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Employee values('mr.Desai','nagpur');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Employee values('mr.deshpande','shirdi');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Employee values('mr.malhotra','hydrabad');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from Employee;
++---------------+----------+
+| E_Name        | City     |
++---------------+----------+
+| mr.chatterjee | mumbai   |
+| mr.Desai      | nagpur   |
+| mr.deshpande  | shirdi   |
+| mr.malhotra   | hydrabad |
++---------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> insert into Employee_Salary values('mr.chaterjee','computer',8000);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into Employee_Salary values('mr.desai','computer',8000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Employee_Salary values('mr.deshpande','computer',8000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Employee_Salary values('mr.malhotra','mechatronics',85000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Employee_Salary values('mr.desai','civil',65000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from Employee_Salary;;
++--------------+--------------+--------+
+| E_name       | Dept         | Salary |
++--------------+--------------+--------+
+| mr.chaterjee | computer     |   8000 |
+| mr.desai     | computer     |   8000 |
+| mr.deshpande | computer     |   8000 |
+| mr.malhotra  | mechatronics |  85000 |
+| mr.desai     | civil        |  65000 |
++--------------+--------------+--------+
+5 rows in set (0.00 sec)
+
+ERROR:
+No query specified
+
+mysql> select Employee.E_Name,Employee_Salary.Salary From Employee INNER JOIN Employee_Salary ON Employee.E_Name=Employee_Salary.E_name;
++--------------+--------+
+| E_Name       | Salary |
++--------------+--------+
+| mr.Desai     |   8000 |
+| mr.deshpande |   8000 |
+| mr.malhotra  |  85000 |
+| mr.Desai     |  65000 |
++--------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select Employee.E_name,Employee_Salary.Salary From Employee LEFT OUTER JOIN Employee_Salary ON Employee.E_Name=Employee_Salary.E_name;
++---------------+--------+
+| E_name        | Salary |
++---------------+--------+
+| mr.chatterjee |   NULL |
+| mr.Desai      |  65000 |
+| mr.Desai      |   8000 |
+| mr.deshpande  |   8000 |
+| mr.malhotra   |  85000 |
++---------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select Employee.E_name,Employee_Salary.Salary From Employee RIGHT OUTER JOIN Employee_Salary ON Employee.E_Name=Employee_Salary.E_name;
++--------------+--------+
+| E_name       | Salary |
++--------------+--------+
+| NULL         |   8000 |
+| mr.Desai     |   8000 |
+| mr.deshpande |   8000 |
+| mr.malhotra  |  85000 |
+| mr.Desai     |  65000 |
++--------------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select Employee.E_Name,Employee.Salary from Employee FULL OUTER JOIN Employee_Salary ON Employee.E_Name=Employee_Salary.E_name;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'OUTER JOIN Employee_Salary ON Employee.E_Name=Employee_Salary.E_name' at line 1
