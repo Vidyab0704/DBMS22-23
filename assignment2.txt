@@ -1,0 +1,198 @@
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 18
+Server version: 8.0.32 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> create database cms;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> use cms;
+Database changed
+mysql> create table donors(did int(10) primary key,dname varchar(100) not null,dphnoe int(15) not null,dadd varchar(100) not null);
+Query OK, 0 rows affected, 2 warnings (0.06 sec)
+mysql> create table donation(dnoid int(10) primary key,did int(100) not null,dodate date not null,donamount int(100) not null);
+Query OK, 0 rows affected, 3 warnings (0.02 sec)
+mysql> create table charity(charid int(10) primary key,charname varchar(100)not null,chartype varchar(100) not null,chardes varchar(100));
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+mysql> insert into donors values(1,'ram',755352352,'shirdi');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> insert into donors values(2,'sai',455753367,'kopargoan');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into donors values(3,'rahul',34467546,'nashik');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into donors values(4,'sakshi',23457757,'nagar');
+Query OK, 1 row affected (0.00 sec)
+mysql> insert into donation values(101,1,'2023-04-02',500000);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into donation values(102,2,'2013-05-04',234445);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into donation values(103,3,'2012-06-05',34355);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into donation values(104,4,'2015-07-06',23455);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into charity values(1001,'money','online','self');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into charity values(1002,'food','in person','family');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into charity values(1003,'clothes','offline','organization');
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from donors;
++-----+--------+-----------+-----------+
+| did | dname  | dphnoe    | dadd      |
++-----+--------+-----------+-----------+
+|   1 | ram    | 755352352 | shirdi    |
+|   2 | sai    | 455753367 | kopargoan |
+|   3 | rahul  |  34467546 | nashik    |
+|   4 | sakshi |  23457757 | nagar     |
++-----+--------+-----------+-----------+
+4 rows in set (0.01 sec)
+
+mysql> select * from donation;
++-------+-----+------------+-----------+
+| dnoid | did | dodate     | donamount |
++-------+-----+------------+-----------+
+|   101 |   1 | 2023-04-02 |    500000 |
+|   102 |   2 | 2013-05-04 |    234445 |
+|   103 |   3 | 2012-06-05 |     34355 |
+|   104 |   4 | 2015-07-06 |     23455 |
++-------+-----+------------+-----------+
+4 rows in set (0.00 sec)
+
+
+mysql> select * from charity;
++--------+----------+-----------+--------------+
+| charid | charname | chartype  | chardes      |
++--------+----------+-----------+--------------+
+|   1001 | money    | online    | self         |
+|   1002 | food     | in person | family       |
+|   1003 | clothes  | offline   | organization |
++--------+----------+-----------+--------------+
+3 rows in set (0.00 sec)
+
+mysql> select dname from donors;
++--------+
+| dname  |
++--------+
+| ram    |
+| sai    |
+| rahul  |
+| sakshi |
++--------+
+4 rows in set (0.00 sec)
+mysql> select chartype from charity;
++-----------+
+| chartype  |
++-----------+
+| online    |
+| in person |
+| offline   |
++-----------+
+3 rows in set (0.00 sec)
+
+mysql> select chartype from charity where charid=1001;
++----------+
+| chartype |
++----------+
+| online   |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select dodate from donation where did=1 AND dnoid=101;
++------------+
+| dodate     |
++------------+
+| 2023-04-02 |
++------------+
+1 row in set (0.00 sec)mysql> select dname from donors where dadd='shirdi';
++-------+
+| dname |
++-------+
+| ram   |
++-------+
+1 row in set (0.01 sec)
+
+mysql> select did from donors where dname='sakshi' ;
++-----+
+| did |
++-----+
+|   4 |
++-----+
+1 row in set (0.00 sec)
+
+mysql> select donamount from donation where dodate='2013-05-04';
++-----------+
+| donamount |
++-----------+
+|    234445 |
++-----------+
+1 row in set (0.01 sec)
+
+mysql> use cms;
+Database changed
+mysql> select count(*) from donors;
++----------+
+| count(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select min(donamount) from donation;
++----------------+
+| min(donamount) |
++----------------+
+|          23455 |
++----------------+
+1 row in set (0.00 sec)
+
+mysql> select dnoid from donation where donamount=(select min(donamount) from donation);
++-------+
+| dnoid |
++-------+
+|   104 |
++-------+
+
+mysql> create view clothes as select * from charity where charname='clothes'
+;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select * from clothes;
++--------+----------+----------+--------------+
+| charid | charname | chartype | chardes      |
++--------+----------+----------+--------------+
+|   1003 | clothes  | offline  | organization |
++--------+----------+----------+--------------+
+1 row in set (0.00 sec)
+
+mysql> select dname from donors WHERE did BETWEEN 2 AND 4;
++--------+
+| dname  |
++--------+
+| sai    |
+| rahul  |
+| sakshi |
++--------+
+3 rows in set (0.01
+mysql> select charname from charity WHERE charname LIKE'____';
++----------+
+| charname |
++----------+
+| food     |
++----------+
+1 row in set (0.00 sec)
