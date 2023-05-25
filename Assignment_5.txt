@@ -1,0 +1,145 @@
+Assignment 5:
+Unnamed PL/SQL code block: Use of Control structure and Exception handling is 
+mandatory. Write a PL/SQL block of code for the following requirements:-
+Schema: 
+1. Borrower(Rollin, Name, DateofIssue, NameofBook, Status) 
+2. Fine(Roll_no,Date,Amt) 
+● Accept roll_no & name of book from user. 
+● Check the number of days (from date of issue), if days are between 15 to 30 then 
+fine amount will be Rs 5 per day. 
+● If no. of days>30, per day fine will be Rs 50 per day & for days less than 30, Rs. 
+5 per day. 
+● After submitting the book, status will change from I to R. 
+● If condition of fine is true, then details will be stored into fine table. 
+Frame the problem statement for writing PL/SQL block inline with above 
+statement.
+
+mysql> create database ass3;
+Query OK, 1 row affected (0.01 sec)
+mysql> use ass3;
+Database changed
+mysql> create table Borrower(Rollin int(12) primary key,Name varchar(25) not null,DateOfIssue date not null,Nameofbook varchar(25) not null,Status varchar(3) not null);
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+mysql> desc Borrower;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| Rollin      | int         | NO   | PRI | NULL    |       |
+| Name        | varchar(25) | NO   |     | NULL    |       |
+| DateOfIssue | date        | NO   |     | NULL    |       |
+| Nameofbook  | varchar(25) | NO   |     | NULL    |       |
+| Status      | varchar(3)  | NO   |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+mysql> create table Fine(Rollno int(12) primary key,Date date not null,Amt i
+nt(12) not null);
+Query OK, 0 rows affected, 2 warnings (0.02 sec)
+
+mysql> desc Fine;
++--------+------+------+-----+---------+-------+
+| Field  | Type | Null | Key | Default | Extra |
++--------+------+------+-----+---------+-------+
+| Rollno | int  | NO   | PRI | NULL    |       |
+| Date   | date | NO   |     | NULL    |       |
+| Amt    | int  | NO   |     | NULL    |       |
++--------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+mysql> insert into Borrower values(001,'sneha','2020-02-13','dbms','I');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Borrower values(002,'vaishnavi','2021-08-10','software engineering','I');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Borrower values(003,'shravani','2023-06-01','java','I');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> insert into Borrower values(098,'trupti','2022-04-24','mathematics','I');
+Query OK, 1 row affected (0.01 sec)
+mysql> select * from Borrower;
++--------+-----------+-------------+----------------------+--------+
+| Rollin | Name      | DateOfIssue | Nameofbook           | Status |
++--------+-----------+-------------+----------------------+--------+
+|      1 | sneha     | 2020-02-13  | dbms                 | I      |
+|      2 | vaishnavi | 2021-08-10  | software engineering | I      |
+|      3 | shravani  | 2023-06-01  | java                 | I      |
+|     98 | trupti    | 2022-04-24  | mathematics          | I      |
++--------+-----------+-------------+----------------------+--------+
+4 rows in set (0.00 sec)
+mysql> select * from fine;
+Empty set (0.00 sec)
+
+delimiter $$
+create procedure calfine(Rollno int(20),name varchar(50))
+begin
+declare Idate date;
+declare fine int(20);
+declare day int(20);
+select DateOfIssue into Idate from Borrower where Rollin=Rollno and Nameofbook=name;
+set day = DATEDIFF(CURDATE(),Idate);
+IF(day>=15 and day<=30) then
+set fine=day*5;
+ELSEIF(day>30) then set fine=day*50;
+end IF;
+update Borrower set status='R' where Rollin=Rollno and Nameofbook=name;
+IF(fine is not null) then insert into Fine values(Rollno,CURDATE(),fine);
+end IF;
+end $$
+delimiter ;;
+
+mysql> delimiter $$
+mysql> create procedure calfine(Rollno int(20),name varchar(50))
+    -> begin
+    -> declare Idate date;
+    -> declare fine int(20);
+    -> declare day int(20);
+    -> select DateOfIssue into Idate from Borrower where Rollin=Rollno and Nameofbook=name;
+    -> set day = DATEDIFF(CURDATE(),Idate);
+    -> IF(day>=15 and day<=30) then
+    -> set fine=day*5;
+    -> ELSEIF(day>30) then set fine=day*50;
+    -> end IF;
+    -> update Borrower set status='R' where Rollin=Rollno and Nameofbook=name;
+    -> IF(fine is not null) then insert into Fine values(Rollno,CURDATE(),fine);
+    -> end IF;
+    -> end $$
+Query OK, 0 rows affected, 3 warnings (0.02 sec)
+
+mysql> delimiter ;;
+mysql> call calfine(3,'java');;
+Query OK, 1 row affected (0.01 sec)
+mysql> select * from Fine;;
+Empty set (0.00 sec)
+
+mysql> call calfine(1,'dbms');;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> call calfine(2,'software engineering');;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from Borrower;;
++--------+-----------+-------------+----------------------+--------+
+| Rollin | Name      | DateOfIssue | Nameofbook           | Status |
++--------+-----------+-------------+----------------------+--------+
+|      1 | sneha     | 2020-02-13  | dbms                 | R      |
+|      2 | vaishnavi | 2021-08-10  | software engineering | R      |
+|      3 | shravani  | 2023-06-01  | java                 | R      |
+|     98 | trupti    | 2022-04-24  | mathematics          | I      |
++--------+-----------+-------------+----------------------+--------+
+4 rows in set (0.00 sec)
+select * from Fine;;
++--------+------------+-------+
+| Rollno | Date       | Amt   |
++--------+------------+-------+
+|      1 | 2023-04-30 | 58600 |
+|      2 | 2023-04-30 | 31400 |
++--------+------------+-------+
+2 rows in set (0.00 sec)
+
++--------+------------+-------+
+| Rollno | Date       | Amt   |
++--------+------------+-------+
+|      1 | 2023-04-30 | 58600 |
+|      2 | 2023-04-30 | 31400 |
++--------+------------+-------+
+2 rows in set (0.01 sec)
