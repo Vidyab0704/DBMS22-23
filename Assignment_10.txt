@@ -1,0 +1,214 @@
+$ mongo
+MongoDB shell version v3.6.8
+connecting to: mongodb://127.0.0.1:27017
+Implicit session: session { "id" : UUID("ad6faab3-330e-456f-9d15-5ba7367808c2") }
+MongoDB server version: 3.6.8
+Server has startup warnings: 
+2023-05-03T10:00:29.363+0530 I STORAGE  [initandlisten] 
+2023-05-03T10:00:29.363+0530 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2023-05-03T10:00:29.363+0530 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2023-05-03T10:00:43.524+0530 I CONTROL  [initandlisten] 
+2023-05-03T10:00:43.524+0530 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2023-05-03T10:00:43.524+0530 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2023-05-03T10:00:43.524+0530 I CONTROL  [initandlisten] 
+> show dbs;
+Vinit     0.000GB
+aadi      0.000GB
+adesh     0.000GB
+admin     0.000GB
+ak        0.000GB
+config    0.000GB
+dbs       0.000GB
+example   0.000GB
+local     0.000GB
+rahul     0.000GB
+rj        0.000GB
+roll6     0.000GB
+samiksha  0.000GB
+sidd      0.000GB
+> use samiksha;
+switched to db samiksha
+> show collections;
+products
+> db.samiksha.find();
+> db.products.find();
+{ "_id" : ObjectId("644a297a5c4a824cc7785a2c"), "name" : "cake", "flavour" : "chocolate", "price" : 350, "ratings" : 5 }
+{ "_id" : ObjectId("644a29915c4a824cc7785a2d"), "name" : "cake", "flavour" : "vanila", "price" : 300, "ratings" : 5 }
+{ "_id" : ObjectId("644a29b05c4a824cc7785a2e"), "name" : "cake", "flavour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+> db.products.insert({name:"bread" ,flavour:"cheese",price:200,ratings:4.2});
+WriteResult({ "nInserted" : 1 })
+> db.products.find().pretty();
+{
+	"_id" : ObjectId("644a297a5c4a824cc7785a2c"),
+	"name" : "cake",
+	"flavour" : "chocolate",
+	"price" : 350,
+	"ratings" : 5
+}
+{
+	"_id" : ObjectId("644a29915c4a824cc7785a2d"),
+	"name" : "cake",
+	"flavour" : "vanila",
+	"price" : 300,
+	"ratings" : 5
+}
+{
+	"_id" : ObjectId("644a29b05c4a824cc7785a2e"),
+	"name" : "cake",
+	"flavour" : "Red Velvet",
+	"price" : 380,
+	"ratings" : 4.5
+}
+{
+	"_id" : ObjectId("644a29cd5c4a824cc7785a2f"),
+	"name" : "cake",
+	"flavour" : "Black forest",
+	"price" : 280,
+	"ratings" : 4
+}
+{
+	"_id" : ObjectId("644a2e995c4a824cc7785a31"),
+	"item" : "cake",
+	"qty" : 25,
+	"flavours" : [
+		"chocolate",
+		"vanilla"
+	],
+	"weight" : 1.5
+}
+{
+	"_id" : ObjectId("644a2e995c4a824cc7785a32"),
+	"item" : "pastry",
+	"qty" : 30,
+	"flavours" : [
+		"mango",
+		"black forest"
+	]
+}
+{
+	"_id" : ObjectId("6451e7794d1da5acf557ef02"),
+	"name" : "bread",
+	"flavour" : "cheese",
+	"price" : 200,
+	"ratings" : 4.2
+}
+
+db.products.insert({name:"cheesecake",flavour:"butterscotch",price:300,ratings:4.9});
+WriteResult({ "nInserted" : 1 })
+> db.products.find();
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("6451f78ca7f37fb42c05093f"), "name" : "cheesecake", "flavour" : "butterscotch", "price" : 300, "ratings" : 4.9 }
+
+> db.products.insertMany([{name:"candies",flavour:"chocolate",price:330,ratings:4.2},{name:"cheesecake",flavour:"blueberry",price:350,ratings:5}]);
+{
+	"acknowledged" : true,
+	"insertedIds" : [
+		ObjectId("6451ec284d1da5acf557ef03"),
+		ObjectId("6451ec284d1da5acf557ef04")
+	]
+}
+> db.products.find();
+{ "_id" : ObjectId("644a297a5c4a824cc7785a2c"), "name" : "cake", "flavour" : "chocolate", "price" : 350, "ratings" : 5 }
+{ "_id" : ObjectId("644a29915c4a824cc7785a2d"), "name" : "cake", "flavour" : "vanila", "price" : 300, "ratings" : 5 }
+{ "_id" : ObjectId("644a29b05c4a824cc7785a2e"), "name" : "cake", "flavour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef03"), "name" : "candies", "flavour" : "chocolate", "price" : 330, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cheesecake", "flavour" : "blueberry", "price" : 350, "ratings" : 5 }
+
+db.products.remove({name:"candies"})
+WriteResult({ "nRemoved" : 1 })
+> db.products.find();
+{ "_id" : ObjectId("644a297a5c4a824cc7785a2c"), "name" : "cake", "flavour" : "chocolate", "price" : 350, "ratings" : 5 }
+{ "_id" : ObjectId("644a29915c4a824cc7785a2d"), "name" : "cake", "flavour" : "vanila", "price" : 300, "ratings" : 5 }
+{ "_id" : ObjectId("644a29b05c4a824cc7785a2e"), "name" : "cake", "flavour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cheesecake", "flavour" : "blueberry", "price" : 350, "ratings" : 5 }
+
+> db.products.updateOne({name:"cheesecake"},{$set:{flavour:"pineapple",price:270},$currentDate:{lastModified:true}})
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+> db.products.find();
+{ "_id" : ObjectId("644a297a5c4a824cc7785a2c"), "name" : "cake", "flavour" : "chocolate", "price" : 350, "ratings" : 5 }
+{ "_id" : ObjectId("644a29915c4a824cc7785a2d"), "name" : "cake", "flavour" : "vanila", "price" : 300, "ratings" : 5 }
+{ "_id" : ObjectId("644a29b05c4a824cc7785a2e"), "name" : "cake", "flavour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cheesecake", "flavour" : "pineapple", "price" : 270, "ratings" : 5, "lastModified" : ISODate("2023-05-03T05:24:07.184Z") }
+
+> db.products.replaceOne({name:"cheesecake"},{name:"cake",falvour:"Red Velvet",price:380,ratings:4.5})
+{ "acknowledged" : true, "matchedCount" : 1, "modifiedCount" : 1 }
+> db.products.find();
+{ "_id" : ObjectId("644a297a5c4a824cc7785a2c"), "name" : "cake", "flavour" : "chocolate", "price" : 350, "ratings" : 5 }
+{ "_id" : ObjectId("644a29915c4a824cc7785a2d"), "name" : "cake", "flavour" : "vanila", "price" : 300, "ratings" : 5 }
+{ "_id" : ObjectId("644a29b05c4a824cc7785a2e"), "name" : "cake", "flavour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+
+db.products.deleteOne({flavour:"Red Velvet"})
+{ "acknowledged" : true, "deletedCount" : 1 }
+> db.products.find();
+{ "_id" : ObjectId("644a297a5c4a824cc7785a2c"), "name" : "cake", "flavour" : "chocolate", "price" : 350, "ratings" : 5 }
+{ "_id" : ObjectId("644a29915c4a824cc7785a2d"), "name" : "cake", "flavour" : "vanila", "price" : 300, "ratings" : 5 }
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+
+db.products.deleteMany({ratings:5})
+{ "acknowledged" : true, "deletedCount" : 2 }
+> db.products.find();
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+
+Query documents:
+1)select all the documents:
+db.products.find({})
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a31"), "item" : "cake", "qty" : 25, "flavours" : [ "chocolate", "vanilla" ], "weight" : 1.5 }
+{ "_id" : ObjectId("644a2e995c4a824cc7785a32"), "item" : "pastry", "qty" : 30, "flavours" : [ "mango", "black forest" ] }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+
+2)Specify equality Condition:
+db.products.find({price:200});
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+
+3)Specify conditions using Query Operators:
+db.products.find({price:{$in:[200,380]}});
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+
+4)Specify AND conditions:
+db.products.find({name:"cake",price:{$lt:380}})
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+
+5)Specify OR Conditions:
+db.products.find({$or:[{name:"cake"},{price:{$lt:380}}]})
+{ "_id" : ObjectId("644a29cd5c4a824cc7785a2f"), "name" : "cake", "flavour" : "Black forest", "price" : 280, "ratings" : 4 }
+{ "_id" : ObjectId("6451e7794d1da5acf557ef02"), "name" : "bread", "flavour" : "cheese", "price" : 200, "ratings" : 4.2 }
+{ "_id" : ObjectId("6451ec284d1da5acf557ef04"), "name" : "cake", "falvour" : "Red Velvet", "price" : 380, "ratings" : 4.5 }
+{ "_id" : ObjectId("6451f78ca7f37fb42c05093f"), "name" : "cheesecake", "flavour" : "butterscotch", "price" : 300, "ratings" : 4.9 }
+
+
+
