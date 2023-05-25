@@ -1,0 +1,291 @@
+mysql> create database student;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| ass3               |
+| assignment4        |
+| bms                |
+| information_schema |
+| library            |
+| mysql              |
+| performance_schema |
+| sakila             |
+| samiksha           |
+| student            |
+| sys                |
+| world              |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> use student;
+Database changed
+mysql> Create table Stud_Marks(RollNo INT PRIMARY KEY,Sname VARCHAR(20),Tota
+l_Marks INT);
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> Insert into Stud_Marks values(1,'samiksha',900);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> Insert into Stud_Marks values(2,'vaishnavi',910);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(3,'deepti',1110);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(4,'Asmita',980);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(5,'Kalyani',850);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(6,'Sneha',899);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(7,'Trupti',1300);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(8,'Vidya',800);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> Insert into Stud_Marks values(9,'Shravani',850);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from stud_marks;
++--------+-----------+-------------+
+| RollNo | Sname     | Total_Marks |
++--------+-----------+-------------+
+|      1 | samiksha  |         900 |
+|      2 | vaishnavi |         910 |
+|      3 | deepti    |        1110 |
+|      4 | Asmita    |         980 |
+|      5 | Kalyani   |         850 |
+|      6 | Sneha     |         899 |
+|      7 | Trupti    |        1300 |
+|      8 | Vidya     |         800 |
+|      9 | Shravani  |         850 |
++--------+-----------+-------------+
+9 rows in set (0.00 sec)
+
+mysql> create table Result(RollNo INT REFERENCES Stud_Marks(RollNo),Sname VA
+RCHAR(20),Marks INT,Grade VARCHAR(20));
+Query OK, 0 rows affected (0.02 sec)
+
+ mysql> DELIMITER $$
+mysql> CREATE PROCEDURE proc_Grade(
+    -> IN roll INT,
+    -> IN marks INT
+    -> )
+    -> BEGIN
+    -> DECLARE student VARCHAR(20);
+    -> DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT 'ENTRY NOT FOUND' AS EXCEPTION;
+    -> IF NOT EXISTS(SELECT * FROM  Stud_Marks WHERE RollNo = roll AND Total_Marks = marks) THEN
+    ->              SIGNAL SQLSTATE '45000';
+    ->  END IF;
+    ->              SELECT Sname INTO student
+    ->              FROM Stud_Marks
+    ->              WHERE RollNo = roll AND Total_Marks = marks;
+    ->           IF marks >= 990 AND marks <= 1500 THEN
+    ->             INSERT INTO Result
+    ->                 VALUES(roll, student, marks, "Distinction");
+    ->             ELSEIF marks >= 900 AND marks <= 989 THEN
+    ->                      INSERT INTO Result
+    ->                          VALUES(roll, student, marks, "First Class");
+
+    ->            ELSEIF marks >= 825 AND marks <= 899 THEN
+    ->                    INSERT INTO Result
+    ->                                  VALUES(roll, student, marks, "Higher Second Class");
+    ->             ELSE
+    ->                INSERT INTO Result VALUES(roll, student, marks, NULL);
+
+    ->              END IF;
+    ->              SELECT * FROM Result;
+    -> END $$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql>  CALL proc_Grade(1,900);
++--------+----------+-------+-------------+
+| RollNo | Sname    | Marks | Grade       |
++--------+----------+-------+-------------+
+|      1 | samiksha |   900 | First Class |
++--------+----------+-------+-------------+
+1 row in set (0.01 sec)
+
+Query OK, 0 rows affected (0.02 sec)
+
+mysql>  CALL proc_Grade(2,910);
++--------+-----------+-------+-------------+
+| RollNo | Sname     | Marks | Grade       |
++--------+-----------+-------+-------------+
+|      1 | samiksha  |   900 | First Class |
+|      2 | vaishnavi |   910 | First Class |
++--------+-----------+-------+-------------+
+2 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+mysql>  CALL proc_Grade(4,980);
++--------+-----------+-------+-------------+
+| RollNo | Sname     | Marks | Grade       |
++--------+-----------+-------+-------------+
+|      1 | samiksha  |   900 | First Class |
+|      2 | vaishnavi |   910 | First Class |
+|      3 | deepti    |  1110 | Distinction |
+|      4 | Asmita    |   980 | First Class |
++--------+-----------+-------+-------------+
+4 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  CALL proc_Grade(9,850);
++--------+-----------+-------+---------------------+
+| RollNo | Sname     | Marks | Grade               |
++--------+-----------+-------+---------------------+
+|      1 | samiksha  |   900 | First Class         |
+|      2 | vaishnavi |   910 | First Class         |
+|      3 | deepti    |  1110 | Distinction         |
+|      4 | Asmita    |   980 | First Class         |
+|      9 | Shravani  |   850 | Higher Second Class |
++--------+-----------+-------+---------------------+
+5 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.05 sec)
+mysql>  CALL proc_Grade(8,800);
++--------+-----------+-------+---------------------+
+| RollNo | Sname     | Marks | Grade               |
++--------+-----------+-------+---------------------+
+|      1 | samiksha  |   900 | First Class         |
+|      2 | vaishnavi |   910 | First Class         |
+|      3 | deepti    |  1110 | Distinction         |
+|      4 | Asmita    |   980 | First Class         |
+|      9 | Shravani  |   850 | Higher Second Class |
+|      8 | Vidya     |   800 | NULL                |
++--------+-----------+-------+---------------------+
+6 rows in set (0.00 sec)
+
+Query OK, 0 rows affected (0.03 sec)
+
+mysql>  CALL proc_Grade(10,800);
++-----------------+
+| EXCEPTION       |
++-----------------+
+| ENTRY NOT FOUND |
++-----------------+
+1 row in set (0.00 sec)
+
+Query OK, 0 rows affected (0.01 sec)
+mysql> DELIMITER $$
+mysql> CREATE FUNCTION fun_Grade(
+    -> marks INT
+    -> )
+    -> RETURNS VARCHAR(20)
+    ->  DETERMINISTIC
+    ->  BEGIN
+    ->           DECLARE grade VARCHAR(20);
+    ->              IF marks >= 990 AND marks <= 1500 THEN
+    ->                  SET grade = 'Distinction';
+    ->               ELSEIF marks >= 900 AND marks <= 989 THEN
+    ->                    SET grade = 'First Class';
+    ->               ELSEIF marks >= 825 AND marks <= 899 THEN
+    ->                  SET grade = 'Higher Second Class';
+    ->                ELSE
+    ->                    SET grade = NULL;
+    ->                END IF;
+    ->            RETURN (grade);
+    ->  END$$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  DELIMITER ;
+mysql> SELECT RollNo, Sname, Total_Marks, fun_Grade(Total_Marks) AS GRADE
+    -> FROM Stud_marks ORDER BY RollNo;
++--------+-----------+-------------+---------------------+
+| RollNo | Sname     | Total_Marks | GRADE               |
++--------+-----------+-------------+---------------------+
+|      1 | samiksha  |         900 | First Class         |
+|      2 | vaishnavi |         910 | First Class         |
+|      3 | deepti    |        1110 | Distinction         |
+|      4 | Asmita    |         980 | First Class         |
+|      5 | Kalyani   |         850 | Higher Second Class |
+|      6 | Sneha     |         899 | Higher Second Class |
+|      7 | Trupti    |        1300 | Distinction         |
+|      8 | Vidya     |         800 | NULL                |
+|      9 | Shravani  |         850 | Higher Second Class |
++--------+-----------+-------------+---------------------+
+9 rows in set (0.01 sec)
+mysql> CREATE TABLE Result2(
+    -> RollNo INT REFERENCES Stud_Marks(RollNo),
+    ->     Sname VARCHAR(20),
+    ->     Marks INT,
+    ->     Grade VARCHAR(20)
+    ->     );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER $$
+mysql>  CREATE PROCEDURE NewGrade_Proc()
+    -> BEGIN
+    ->           DECLARE roll INT;
+    ->            DECLARE m INT;
+    ->            DECLARE student VARCHAR(20);
+    ->            DECLARE exit_loop BOOLEAN;
+    ->            DECLARE C1 CURSOR FOR SELECT * FROM Stud_Marks;
+    ->            DECLARE CONTINUE HANDLER FOR NOT FOUND SET exit_loop = TRUE;
+    ->        OPEN C1;
+    ->           L1: LOOP
+    ->                   FETCH C1 INTO roll,student,m;
+    ->                    IF exit_loop THEN
+    ->                             CLOSE c1;
+    ->                             LEAVE L1;
+    ->                    END IF;
+    ->                    IF m >= 990 AND m <= 1500 THEN
+    ->                              INSERT INTO Result2
+    ->                                     VALUES(roll, student, m, "Distinction");
+    ->                    ELSEIF m >= 900 AND m <= 989 THEN
+    ->                               INSERT INTO Result2
+    ->                                       VALUES(roll, student, m, "First Class");
+    ->                    ELSEIF m >= 825 AND m <= 899 THEN
+    ->                                 INSERT INTO Result2
+    ->                                           VALUES(roll, student, m, "Higher Second Class");
+    ->                    ELSE
+    ->                                INSERT INTO Result2 VALUES(roll, student, m, NULL);
+    ->                    END IF;
+    ->          END LOOP L1;
+    ->     END $$
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> CALL NewGrade_Proc();
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> SELECT * FROM Result2;
++--------+-----------+-------+---------------------+
+| RollNo | Sname     | Marks | Grade               |
++--------+-----------+-------+---------------------+
+|      1 | samiksha  |   900 | First Class         |
+|      2 | vaishnavi |   910 | First Class         |
+|      3 | deepti    |  1110 | Distinction         |
+|      4 | Asmita    |   980 | First Class         |
+|      5 | Kalyani   |   850 | Higher Second Class |
+|      6 | Sneha     |   899 | Higher Second Class |
+|      7 | Trupti    |  1300 | Distinction         |
+|      8 | Vidya     |   800 | NULL                |
+|      9 | Shravani  |   850 | Higher Second Class |
++--------+-----------+-------+---------------------+
+9 rows in set (0.00 sec)
+
+mysql> DROP TABLE Stud_Marks;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  DROP FUNCTION fun_Grade;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DROP TABLE Result;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  DROP PROCEDURE proc_Grade;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>  DROP PROCEDURE NewGrade_Proc;
+Query OK, 0 rows affected (0.00 sec)
+
